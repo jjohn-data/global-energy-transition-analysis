@@ -4,45 +4,64 @@
 
 This project explores the global energy transition using the Our World in Data (OWID) Energy Dataset.
 
-The analysis investigates how renewable energy adoption has evolved between 1990 and 2024, identifies countries leading the energy transition, examines fossil fuel dependence, and explores the relationship between renewable energy share and greenhouse gas emissions.
+The analysis examines how renewable energy adoption changed between 1990 and 2024, which countries have high renewable shares, where fossil-fuel dependence remains high, and how renewable electricity generation relates to the carbon intensity of electricity production.
 
-The project was completed using Python, Pandas, and Matplotlib.
-
----
+The project was completed with Python, Pandas, Matplotlib, Country Converter, and Jupyter Notebook.
 
 ## Research Questions
 
 1. How has the global share of renewable energy developed over time?
-2. Which countries are leading the energy transition?
+2. Which countries have high renewable energy shares, and which improved most since 1990?
 3. Which countries remain highly dependent on fossil fuels?
-4. Is there a relationship between renewable energy share and greenhouse gas emissions per capita?
-
----
+4. Is there a relationship between renewable electricity share and the carbon intensity of electricity generation?
 
 ## Dataset
 
 **Source:** Our World in Data (OWID) Energy Dataset
 
-Key variables used in this analysis:
+The repository includes a local snapshot of the OWID energy dataset used for this analysis.
 
-* Renewable energy share
-* Fossil fuel share
-* Greenhouse gas emissions
-* Population
-* Country
-* Year
+Key variables include:
 
----
+- `renewables_share_energy`
+- `fossil_share_energy`
+- `renewables_share_elec`
+- `carbon_intensity_elec`
+- `population`
+- `iso_code`
+- `country`
+- `year`
 
-## Tools and Libraries
+The dataset contains both countries and aggregate regions. Country-level comparisons therefore filter to rows with a non-null ISO code to avoid mixing countries with regional aggregates.
 
-* Python
-* Pandas
-* Matplotlib
-* Country Converter (country_converter)
-* Jupyter Notebook
+## Methodology
 
----
+### 1. Global time-series analysis
+
+The OWID `World` aggregate is filtered to 1990–2024 to examine changes in renewable and fossil shares of total energy supply.
+
+### 2. Country-level comparisons
+
+Country rows are identified using non-null ISO codes. The analysis compares:
+
+- renewable energy share in 2024,
+- change in renewable energy share between 1990 and 2024,
+- fossil-fuel share in 2024.
+
+Only countries with the required values are included in each comparison.
+
+### 3. European subset
+
+`country_converter` is used to assign countries to continents for a separate European comparison.
+
+### 4. Renewable electricity and carbon intensity
+
+The final section compares:
+
+- renewable electricity share (`renewables_share_elec`), and
+- carbon intensity of electricity generation (`carbon_intensity_elec`).
+
+Pearson correlation is used as a **descriptive measure of association**, not as a causal estimate. The same analysis is repeated for the European subset.
 
 ## Visualizations
 
@@ -62,88 +81,82 @@ Key variables used in this analysis:
 
 ![Renewable Improvement](visuals/4_countries_largest_increase_renewable_energy.png)
 
-### Most Fossil Fuel Dependent Countries (2024)
+### Most Fossil-Fuel-Dependent Countries (2024)
 
 ![Fossil Dependence Global](visuals/5_most_fossil_fuel_2024.png)
 
-### Most Fossil Fuel Dependent Countries in Europe (2024)
+### Most Fossil-Fuel-Dependent Countries in Europe (2024)
 
 ![Fossil Dependence Europe](visuals/6_most_fossil_fuel_europe_2024.png)
 
-### Renewable Energy Share vs Greenhouse Gas Emissions
+The notebook also generates two additional scatter plots for Question 4:
 
-![Renewables vs Emissions](visuals/7_renewable_share_energy_ghg_emissions.png)
+- renewable electricity share vs. carbon intensity, globally
+- renewable electricity share vs. carbon intensity, Europe
 
-### Europe: Renewable Energy Share vs Greenhouse Gas Emissions
+These plots are regenerated when the notebook is executed.
 
-![Renewables vs Emissions Europe](visuals/8_renewable_share_energy_ghg_emissions_europe.png)
+## Main Findings
 
----
+- Renewable energy's share of total energy supply increased substantially between 1990 and 2024.
+- Fossil fuels still account for the majority of the global energy mix.
+- Countries differ strongly in both their current renewable shares and the scale of improvement since 1990.
+- Several countries remain highly dependent on fossil energy.
+- The electricity analysis tests whether higher renewable-electricity shares are associated with lower electricity-sector carbon intensity.
+- Any correlation found is descriptive and should not be interpreted as proof that renewable electricity alone causes lower carbon intensity.
 
-## Key Findings
+## Reproducibility
 
-### Renewable Energy Growth
+The notebook uses project-relative paths and can be launched either from the repository root or from the `notebooks/` directory.
 
-* The global share of renewable energy increased from 6.8% in 1990 to 14.8% in 2024.
-* Growth accelerated noticeably after 2008.
-* Despite this progress, fossil fuels continue to dominate the global energy mix.
+### Installation
 
-### Renewable Energy Leaders
+```bash
+python -m pip install -r requirements.txt
+```
 
-* Iceland leads the world with a renewable energy share of 80.5%.
-* Norway and Sweden rank second and third globally.
-* Germany ranks 21st worldwide but remains well above the global median.
+Then open:
 
-### Renewable Energy Progress Since 1990
+```text
+notebooks/energy_transition_analysis.ipynb
+```
 
-* Denmark achieved the largest increase in renewable energy share (+40.5 percentage points).
-* Germany ranks fifth globally with an increase of +22.7 percentage points.
-* The countries with the highest renewable energy shares are not necessarily the countries that improved the most.
+and run all cells from top to bottom.
 
-### Fossil Fuel Dependence
-
-* Several oil- and gas-producing countries remain almost entirely dependent on fossil fuels.
-* Russia has the highest fossil fuel dependence in Europe.
-* Germany continues to rely heavily on fossil energy sources.
-
-### Emissions and Renewable Energy
-
-* A moderate negative correlation (-0.467) exists between renewable energy share and greenhouse gas emissions per capita.
-* Countries with higher renewable energy shares generally tend to have lower emissions.
-* Within Europe, the relationship is weaker (-0.336), indicating that additional factors influence emission levels.
-
----
+The notebook recreates the charts in `visuals/`.
 
 ## Repository Structure
 
 ```text
-global-energy-transition-analysis
-│
-├── README.md
-│
-├── notebooks
-│   └── energy_transition_analysis.ipynb
-│
-├── data
+global-energy-transition-analysis/
+├── data/
 │   └── owid_energy_data.csv
-│
-└── visuals
-    ├── 1_global_energy_mix.png
-    ├── 2_global_renewable_energy_share.png
-    ├── 3_top_renewable_energy_countries_2024.png
-    ├── 4_countries_largest_increase_renewable_energy.png
-    ├── 5_most_fossil_fuel_2024.png
-    ├── 6_most_fossil_fuel_europe_2024.png
-    ├── 7_renewable_share_energy_ghg_emissions.png
-    └── 8_renewable_share_energy_ghg_emissions_europe.png
+├── notebooks/
+│   └── energy_transition_analysis.ipynb
+├── visuals/
+│   ├── 1_global_energy_mix.png
+│   ├── 2_global_renewable_energy_share.png
+│   ├── 3_top_renewable_energy_countries_2024.png
+│   ├── 4_countries_largest_increase_renewable_energy.png
+│   ├── 5_most_fossil_fuel_2024.png
+│   └── 6_most_fossil_fuel_europe_2024.png
+├── requirements.txt
+└── README.md
 ```
 
----
+## Limitations
+
+- The project is descriptive and does not establish causal relationships.
+- Country comparisons depend on data availability and may use different subsets of countries for different indicators.
+- Cross-country rankings do not control for population, economic structure, geography, climate, energy demand, trade, or policy differences.
+- Renewable energy share and renewable electricity share are different indicators and are used for different analytical questions.
+- Carbon intensity in Question 4 refers specifically to electricity generation, not total national greenhouse-gas emissions.
+- The OWID dataset is periodically revised as upstream sources and processing methods change.
 
 ## Conclusion
 
-The analysis demonstrates that renewable energy adoption has increased substantially over the past three decades. However, fossil fuels remain the dominant source of energy globally.
+The analysis shows substantial but uneven progress in the global energy transition. Renewable energy has expanded, yet fossil fuels remain dominant in total energy supply.
 
-Countries with higher renewable energy shares generally exhibit lower greenhouse gas emissions, although renewable energy alone does not fully explain emission levels. Additional factors such as industrial structure, transportation, energy efficiency, and economic activity also influence national emissions.
+The country comparisons highlight major differences in starting points and trajectories. The final electricity-sector analysis adds a separate perspective by examining whether renewable electricity share is associated with lower carbon intensity while keeping the interpretation explicitly descriptive.
 
-Overall, the results suggest that the global energy transition is progressing, but the shift away from fossil fuels remains incomplete.
+Overall, the project demonstrates country filtering, time-series analysis, comparative analysis, visualization, and careful interpretation of multi-source energy indicators.
